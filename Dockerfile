@@ -18,8 +18,7 @@ WORKDIR /go/src/github.com/gohugoio/hugo
 COPY . /go/src/github.com/gohugoio/hugo/
 
 # gcc/g++ are required to build SASS libraries for extended version
-RUN apk update && \
-    apk add --no-cache gcc g++ musl-dev && \
+RUN apk add --update --no-cache gcc g++ musl-dev && \
     go get github.com/magefile/mage
 
 RUN mage hugo && mage install
@@ -32,8 +31,8 @@ COPY --from=build /go/bin/hugo /usr/bin/hugo
 
 # libc6-compat & libstdc++ are required for extended SASS libraries
 # ca-certificates are required to fetch outside resources (like Twitter oEmbeds)
-RUN apk update && \
-    apk add --no-cache ca-certificates libc6-compat libstdc++
+RUN apk add --update --no-cache ca-certificates libc6-compat libstdc++ && \
+    rm -rf /var/cache/apk/*
 
 VOLUME /site
 WORKDIR /site
